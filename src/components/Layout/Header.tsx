@@ -113,7 +113,6 @@ export default function Header({ onCartClick, onAuthClick }: HeaderProps) {
             </div>
           </div>
         )}
-      </div>
     </header>
   );
 }
