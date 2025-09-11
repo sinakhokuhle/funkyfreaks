@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, User, Menu, X, Search } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Search, MessageCircle } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 
 interface HeaderProps {
@@ -72,6 +72,17 @@ export default function Header({ onCartClick, onAuthClick }: HeaderProps) {
             >
               <User className="w-6 h-6" />
             </button>
+
+            {/* WhatsApp Button */}
+            <a
+              href="https://wa.me/27658553612"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-gray-300 hover:text-green-400 transition-colors"
+              title="Contact us on WhatsApp"
+            >
+              <MessageCircle className="w-6 h-6" />
+            </a>
 
             {/* Mobile menu button */}
             <button

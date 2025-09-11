@@ -74,8 +74,47 @@ export default function Checkout({ isOpen, onClose }: CheckoutProps) {
       total,
     });
 
+    // Redirect to WhatsApp with order details
+    redirectToWhatsApp(order, state.user);
+    
     alert(`Order placed successfully! Order number: ${orderNumber}`);
     onClose();
+  };
+
+  const redirectToWhatsApp = (order: any, user: any) => {
+    const phoneNumber = '27658553612'; // Remove leading 0 and add country code
+    
+    // Create order details message
+    const orderItems = order.items.map((item: any) => 
+      `• ${item.product.name} (${item.selectedSize}, ${item.selectedColor}) x${item.quantity} - R${(item.product.price * item.quantity).toFixed(2)}`
+    ).join('\n');
+    
+    const message = `🛍️ *New Order - Funky Freaks*
+
+*Order Number:* ${order.orderNumber}
+*Customer:* ${user.firstName} ${user.lastName}
+*Email:* ${user.email}
+*Phone:* ${user.phone || 'Not provided'}
+
+*Order Details:*
+${orderItems}
+
+*Delivery Method:* ${order.deliveryMethod === 'pickup' ? 'Self Pickup' : 'Home Delivery'}
+${order.deliveryAddress ? `*Delivery Address:* ${order.deliveryAddress}` : ''}
+
+*Subtotal:* R${order.subtotal.toFixed(2)}
+*Delivery Cost:* R${order.deliveryCost.toFixed(2)}
+*Total:* R${order.total.toFixed(2)}
+
+*Status:* Pending Payment
+
+Please confirm this order and provide payment details.`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    
+    // Open WhatsApp in new tab
+    window.open(whatsappUrl, '_blank');
   };
 
   if (!isOpen) return null;
@@ -187,11 +226,20 @@ export default function Checkout({ isOpen, onClose }: CheckoutProps) {
           {/* Payment Method */}
           <div className="bg-gray-800 rounded-lg p-6">
             <h3 className="text-xl font-semibold text-white mb-4">Payment Method</h3>
-            <div className="flex items-center space-x-3 p-4 border border-gray-600 rounded-lg">
-              <CreditCard className="w-6 h-6 text-purple-400" />
-              <div>
-                <p className="text-white font-semibold">Credit/Debit Card</p>
-                <p className="text-gray-400 text-sm">Secure payment processing</p>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3 p-4 border border-gray-600 rounded-lg">
+                <CreditCard className="w-6 h-6 text-purple-400" />
+                <div>
+                  <p className="text-white font-semibold">Capitec Pay</p>
+                  <p className="text-gray-400 text-sm">Secure payment via Capitec Bank</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3 p-4 border border-gray-600 rounded-lg">
+                <MessageCircle className="w-6 h-6 text-green-400" />
+                <div>
+                  <p className="text-white font-semibold">WhatsApp Order</p>
+                  <p className="text-gray-400 text-sm">Complete order via WhatsApp</p>
+                </div>
               </div>
             </div>
           </div>

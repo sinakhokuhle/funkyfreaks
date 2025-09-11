@@ -158,7 +158,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         {isLogin && (
           <div className="mt-4 text-center">
             <p className="text-xs text-gray-500">
-              Demo: Use admin@funkyfreaks.com for admin access
+              Demo: Use ss.mbhele10@gmail.com for admin access
             </p>
           </div>
         )}
