@@ -2,15 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { ChevronRight, Sparkles } from 'lucide-react';
 
 export default function Hero() {
-  const [logoAnimated, setLogoAnimated] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLogoAnimated(true);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 overflow-hidden">
       {/* Animated Background Elements */}
@@ -21,15 +12,15 @@ export default function Hero() {
       </div>
 
       <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        {/* Animated Logo */}
-        <div className={`mb-12 transform transition-all duration-1000 ${logoAnimated ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`}>
+        {/* Logo */}
+        <div className="mb-12">
           <div className="relative inline-block">
             <img 
               src="/1000239715.jpg" 
               alt="Funky Freaks Logo" 
-              className="h-48 w-48 md:h-64 md:w-64 mx-auto rounded-2xl object-cover shadow-2xl ring-8 ring-purple-500 ring-opacity-50 animate-pulse hover:animate-spin transition-all duration-500"
+              className="h-48 w-48 md:h-64 md:w-64 mx-auto rounded-2xl object-cover shadow-2xl ring-8 ring-purple-500 ring-opacity-50"
             />
-            <div className="absolute -inset-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-40 animate-pulse"></div>
+            <div className="absolute -inset-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-40"></div>
           </div>
         </div>
 
