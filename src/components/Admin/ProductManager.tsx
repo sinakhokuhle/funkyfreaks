@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { X, Plus, Edit, Trash2, Save, Cancel } from 'lucide-react'
+import { X, Plus, Edit, Trash2, Save, Ambulance as Cancel } from 'lucide-react'
 import { productService } from '../../services/productService'
 import { Product } from '../../types'
 
