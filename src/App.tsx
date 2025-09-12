@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './contexts/AppContext';
+import { productService } from './services/productService';
+import { orderService } from './services/orderService';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import Hero from './components/Home/Hero';
@@ -10,7 +12,6 @@ import Cart from './components/Cart/Cart';
 import AuthModal from './components/Auth/AuthModal';
 import Checkout from './components/Checkout/Checkout';
 import { Product } from './types';
-import { mockProducts } from './data/mockData';
 
 function AppContent() {
   const { state, dispatch } = useApp();
@@ -20,9 +21,21 @@ function AppContent() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   useEffect(() => {
-    // Load mock products
-    dispatch({ type: 'SET_PRODUCTS', payload: mockProducts });
+    // Load products from Supabase
+    loadProducts();
   }, [dispatch]);
+
+  const loadProducts = async () => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      const products = await productService.getAllProducts();
+      dispatch({ type: 'SET_PRODUCTS', payload: products });
+    } catch (error) {
+      console.error('Error loading products:', error);
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  };
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -62,6 +75,26 @@ function AppContent() {
     setIsCheckoutOpen(true);
   };
 
+  const handleOrderSubmit = async (orderData: any) => {
+    try {
+      const result = await orderService.createOrder(orderData);
+      
+      if (result.success) {
+        // Clear cart after successful order
+        dispatch({ type: 'CLEAR_CART' });
+        
+        // Reload products to update inventory
+        await loadProducts();
+        
+        return result;
+      } else {
+        throw new Error(result.error || 'Order failed');
+      }
+    } catch (error) {
+      console.error('Order error:', error);
+      throw error;
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-900">
       <Header 
@@ -111,6 +144,7 @@ function AppContent() {
       <Checkout
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
+        onOrderSubmit={handleOrderSubmit}
       />
     </div>
   );

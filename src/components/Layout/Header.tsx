@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ShoppingCart, User, Menu, X, Search, MessageCircle } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Search, MessageCircle, Settings } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
+import ProductManager from '../Admin/ProductManager';
 
 interface HeaderProps {
   onCartClick: () => void;
@@ -10,6 +11,7 @@ interface HeaderProps {
 export default function Header({ onCartClick, onAuthClick }: HeaderProps) {
   const { state } = useApp();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showProductManager, setShowProductManager] = useState(false);
   
   const cartItemsCount = state.cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -73,6 +75,17 @@ export default function Header({ onCartClick, onAuthClick }: HeaderProps) {
               <User className="w-6 h-6" />
             </button>
 
+            {/* Admin Product Manager */}
+            {state.user?.isAdmin && (
+              <button
+                onClick={() => setShowProductManager(true)}
+                className="p-2 text-gray-300 hover:text-purple-400 transition-colors"
+                title="Manage Products"
+              >
+                <Settings className="w-6 h-6" />
+              </button>
+            )}
+
             {/* WhatsApp Button */}
             <a
               href="https://wa.me/27658553612"
@@ -114,6 +127,12 @@ export default function Header({ onCartClick, onAuthClick }: HeaderProps) {
           </div>
         )}
       </div>
+      
+      {/* Product Manager Modal */}
+      <ProductManager
+        isOpen={showProductManager}
+        onClose={() => setShowProductManager(false)}
+      />
     </header>
   );
 }

@@ -18,9 +18,8 @@ export default function Hero() {
             <img 
               src="/1000239715.jpg" 
               alt="Funky Freaks Logo" 
-              className="h-48 w-48 md:h-64 md:w-64 mx-auto rounded-2xl object-cover shadow-2xl ring-8 ring-purple-500 ring-opacity-50"
+              className="h-48 w-48 md:h-64 md:w-64 mx-auto rounded-2xl object-cover shadow-2xl"
             />
-            <div className="absolute -inset-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-40"></div>
           </div>
         </div>
 

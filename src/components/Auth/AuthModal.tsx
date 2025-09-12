@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, MapPin } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
+import AdminLogin from '../Admin/AdminLogin';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface AuthModalProps {
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const { dispatch } = useApp();
   const [isLogin, setIsLogin] = useState(true);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -153,16 +155,23 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               {isLogin ? 'Sign Up' : 'Sign In'}
             </button>
           </p>
+          
+          <div className="mt-4 pt-4 border-t border-gray-800">
+            <button
+              onClick={() => setShowAdminLogin(true)}
+              className="text-sm text-gray-500 hover:text-purple-400 transition-colors"
+            >
+              Store Owner Login
+            </button>
+          </div>
         </div>
 
-        {isLogin && (
-          <div className="mt-4 text-center">
-            <p className="text-xs text-gray-500">
-              Demo: Use ss.mbhele10@gmail.com for admin access
-            </p>
-          </div>
-        )}
       </div>
+      
+      <AdminLogin
+        isOpen={showAdminLogin}
+        onClose={() => setShowAdminLogin(false)}
+      />
     </div>
   );
 }

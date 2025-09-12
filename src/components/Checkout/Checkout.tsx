@@ -6,9 +6,10 @@ import DeliveryMap from './DeliveryMap';
 interface CheckoutProps {
   isOpen: boolean;
   onClose: () => void;
+  onOrderSubmit?: (orderData: any) => Promise<any>;
 }
 
-export default function Checkout({ isOpen, onClose }: CheckoutProps) {
+export default function Checkout({ isOpen, onClose, onOrderSubmit }: CheckoutProps) {
   const { state, dispatch } = useApp();
   const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery'>('pickup');
   const [deliveryLocation, setDeliveryLocation] = useState<{ lat: number; lng: number; address: string } | null>(null);
@@ -46,39 +47,35 @@ export default function Checkout({ isOpen, onClose }: CheckoutProps) {
       return;
     }
 
-    // Generate order number
-    const orderNumber = `FF${Date.now().toString().slice(-6)}`;
-
-    const order = {
-      id: Date.now().toString(),
-      orderNumber,
-      userId: state.user.id,
+    const orderData = {
+      customerName: `${state.user.firstName} ${state.user.lastName}`,
+      customerEmail: state.user.email,
+      phoneNumber: state.user.phone || '0000000000',
+      homeAddress: state.user.homeAddress,
       items: [...state.cart],
       subtotal,
       deliveryCost,
-      total,
+      totalPrice: total,
       deliveryMethod,
       deliveryAddress: deliveryLocation?.address,
-      status: 'pending' as const,
-      createdAt: new Date(),
     };
 
-    // Add order and clear cart
-    dispatch({ type: 'ADD_ORDER', payload: order });
-    dispatch({ type: 'CLEAR_CART' });
-
-    // Mock email automation
-    console.log('Sending confirmation email...', {
-      to: state.user.email,
-      orderNumber,
-      total,
-    });
-
-    // Redirect to WhatsApp with order details
-    redirectToWhatsApp(order, state.user);
-    
-    alert(`Order placed successfully! Order number: ${orderNumber}`);
-    onClose();
+    try {
+      if (onOrderSubmit) {
+        const result = await onOrderSubmit(orderData);
+        
+        if (result.success) {
+          // Redirect to WhatsApp with order details
+          redirectToWhatsApp(result.order, state.user);
+          
+          alert(`Order placed successfully! Order number: ${result.orderNumber}`);
+          onClose();
+        }
+      }
+    } catch (error) {
+      alert('Failed to place order. Please try again.');
+      console.error('Order error:', error);
+    }
   };
 
   const redirectToWhatsApp = (order: any, user: any) => {
