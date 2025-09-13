@@ -36,7 +36,7 @@ export default function Checkout({ isOpen, onClose, onOrderSubmit }: CheckoutPro
     setShowMap(false);
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (!state.user) {
       alert('Please login to place an order');
       return;
